@@ -16,14 +16,50 @@ import Head from './components/Head/Head';
 import { DiscussionsHome } from './discussions';
 import messages from './i18n';
 import store from './store';
+import { useState, useEffect } from 'react';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
+import RestrictionPage from './restriction-page/RestrictionPage';
 
 import './index.scss';
+
+const RestrictionWrapper = () => {
+  const [hasProfileCompleted, setHasProfileCompleted] = useState(true);
+  const [canAccessPage, setCanAccessPage] = useState(true);
+
+  useEffect(() => {
+    const { LMS_BASE_URL } = getConfig();
+
+    const loadProfileCompletion = async () => {
+      try {
+        const client = getAuthenticatedHttpClient();
+        const { data } = await client.get(`${LMS_BASE_URL}/profile/progress/?role=student`);
+        if (data?.percentage === 100) {
+          setHasProfileCompleted(true);
+        } else {
+          setHasProfileCompleted(false);
+        }
+        setCanAccessPage(data.hidden);
+
+      } catch (err) {
+        console.error('Failed to load profile progress:', err);
+        setHasProfileCompleted(false);
+      }
+    };
+
+    loadProfileCompletion();
+  }, []);
+
+  if (!hasProfileCompleted && !canAccessPage) {
+    return <RestrictionPage />;
+  }
+};
 
 const rootNode = createRoot(document.getElementById('root'));
 subscribe(APP_READY, () => {
   rootNode.render(
     <StrictMode>
       <AppProvider store={store}>
+        <RestrictionWrapper />
         <Head />
         <DiscussionsHome />
       </AppProvider>
