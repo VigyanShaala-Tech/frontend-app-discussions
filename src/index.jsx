@@ -19,6 +19,7 @@ import store from './store';
 import { useState, useEffect } from 'react';
 import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 import RestrictionPage from './restriction-page/RestrictionPage';
+import { getConfig } from '@edx/frontend-platform';
 
 import './index.scss';
 
