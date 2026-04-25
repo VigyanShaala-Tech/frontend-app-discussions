@@ -26,6 +26,7 @@ import messages from '../messages';
 import { selectPostEditorVisible } from '../posts/data/selectors';
 import { isCourseStatusValid } from '../utils';
 import useFeedbackWrapper from './FeedbackWrapper';
+import { PluginSlot } from '@openedx/frontend-plugin-framework';
 
 const FooterSlot = lazy(() => import('@edx/frontend-component-footer').then(module => ({ default: module.FooterSlot })));
 const PostActionsBar = lazy(() => import('../posts/post-actions-bar/PostActionsBar'));
@@ -86,7 +87,12 @@ const DiscussionsHome = () => {
         {!enableInContextSidebar && (
         <>
           <DiscussionsConfirmEmailBanner />
-          <Header courseOrg={org} courseNumber={courseNumber} courseTitle={courseTitle} />
+          <PluginSlot
+            id = "discussions_mfe_header_plugin_slot"
+            pluginProps = {{}}
+          >
+            <Header courseOrg={org} courseNumber={courseNumber} courseTitle={courseTitle} />
+          </PluginSlot>
         </>
         )}
         <main className="container-fluid d-flex flex-column p-0 w-100 font-size" id="main" tabIndex="-1">
