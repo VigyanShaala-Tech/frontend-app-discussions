@@ -96,7 +96,20 @@ const DiscussionsHome = () => {
         </>
         )}
         <main className="container-fluid d-flex flex-column p-0 w-100 font-size" id="main" tabIndex="-1">
-          {!enableInContextSidebar && <CourseTabsNavigation />}
+          {!enableInContextSidebar && (
+            <PluginSlot
+              id="discussions_mfe_course_tabs_plugin_slot"
+              pluginProps={{
+                activeTabSlug: 'discussion',
+                courseId,
+              }}
+              slotOptions={{
+                mergeProps: true,
+              }}
+            >
+              <CourseTabsNavigation />
+            </PluginSlot>
+          )}
           {(isEnrolled || !isUserLearner) && (
             <div
               className={classNames('header-action-bar bg-white position-sticky', {
